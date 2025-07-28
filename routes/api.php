@@ -14,6 +14,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/services', [ServicesController::class, 'getAllServices']);
 Route::get('/popular-services', [ServicesController::class, 'getPopularServices']);
+Route::get('services/{service}', [ServicesController::class, 'show']); // Fetch 
 
 
 Route::prefix('admin')->group(function () {
