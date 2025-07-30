@@ -15,5 +15,10 @@ class Service extends Model
         'category',
         'featured',
     ];
+
+        public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
 }
 
