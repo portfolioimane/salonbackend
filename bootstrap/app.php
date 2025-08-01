@@ -12,7 +12,24 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Exclude API routes from CSRF protection
+        $middleware->validateCsrfTokens(except: [
+            'api/*',
+        ]);
+        
+        // Add Sanctum middleware to API routes
+        $middleware->api(append: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        ]);
+
+        // For stateful requests (if using SPA)
+        $middleware->statefulApi();
+        
+        // Register middleware aliases
+        $middleware->alias([
+            'auth:sanctum' => \Illuminate\Auth\Middleware\Authenticate::class.':sanctum',
+            'admin' => \App\Http\Middleware\IsAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
