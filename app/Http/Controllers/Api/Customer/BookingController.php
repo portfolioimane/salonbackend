@@ -97,7 +97,6 @@ public function createBooking(Request $request)
         'start_time' => 'required|date_format:H:i', // Ensure time format is correct
         'end_time' => 'required|date_format:H:i|after:start_time', // Ensure end_time is after start_time
         'payment_method' => 'required|string',
-        'total' => 'required|numeric',
     ]);
 
     // Retrieve the selected service
@@ -139,7 +138,7 @@ $existingBooking = Booking::where('date', $validated['date'])
         'start_time' => $validated['start_time'],
         'end_time' => $validated['end_time'],
         'payment_method' => $validated['payment_method'],
-        'total' => $validated['total'],
+        'total' => $service->price,
         'status' => $status,
         'paid_amount' => $paidAmount,
     ]);

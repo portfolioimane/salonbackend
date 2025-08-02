@@ -1,22 +1,39 @@
 <?php
+
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Finance;
+use App\Models\Booking; // Include the Booking model
 use Illuminate\Http\Request;
 
 class FinanceController extends Controller
 {
+    /**
+     * Display a listing of the finances along with booking revenue.
+     */
     public function index()
     {
-       $finances = Finance::all();
+        $finances = Finance::all();
 
-    // Log all finance records as array
-    \Log::info('All finance records:', $finances->toArray());
+        // Calculate total paid booking revenue
+        $bookingRevenue = Booking::sum('paid_amount');
 
-    return $finances;
+        // Optional logging for debugging
+        \Log::info('All finance records:', $finances->toArray());
+        \Log::info('Total booking revenue:', ['bookingRevenue' => $bookingRevenue]);
+
+        return response()->json([
+            'finances' => $finances,
+            'bookingRevenue' => $bookingRevenue,
+            'totalRevenue' => $finances->where('type', 'revenue')->sum('amount') + $bookingRevenue,
+            'totalExpense' => $finances->where('type', 'expense')->sum('amount'),
+        ]);
     }
 
+    /**
+     * Store a newly created finance record.
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -29,11 +46,17 @@ class FinanceController extends Controller
         return Finance::create($data);
     }
 
+    /**
+     * Display the specified finance record.
+     */
     public function show(Finance $finance)
     {
         return $finance;
     }
 
+    /**
+     * Update the specified finance record.
+     */
     public function update(Request $request, Finance $finance)
     {
         $data = $request->validate([
@@ -48,6 +71,9 @@ class FinanceController extends Controller
         return $finance;
     }
 
+    /**
+     * Remove the specified finance record.
+     */
     public function destroy(Finance $finance)
     {
         $finance->delete();

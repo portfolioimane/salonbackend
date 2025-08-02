@@ -66,7 +66,7 @@ class BookingsController extends Controller
         'phone' => 'nullable|string|max:255',
         'service_id' => 'nullable|exists:services,id',
         'payment_method' => 'nullable|string',
-        'status' => 'nullable|in:pending,confirmed,cancelled,completed',
+        'status' => 'nullable|in:Pending,Confirmed,Cancelled',
         'date' => 'nullable|date',
         'start_time' => 'nullable|string',
         'end_time' => 'nullable|string',
